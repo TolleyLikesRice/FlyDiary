@@ -21,9 +21,9 @@ export default interface Flights {
 
   destination: string;
 
-  departure: Date;
+  departure: string;
 
-  arrival: Date;
+  arrival: string;
 
   day_se_p1: unknown | null;
 
@@ -79,9 +79,9 @@ export interface FlightsInitializer {
 
   destination: string;
 
-  departure: Date;
+  departure: string;
 
-  arrival: Date;
+  arrival: string;
 
   day_se_p1?: unknown | null;
 
@@ -140,9 +140,9 @@ export interface FlightsMutator {
 
   destination?: string;
 
-  departure?: Date;
+  departure?: string;
 
-  arrival?: Date;
+  arrival?: string;
 
   day_se_p1?: unknown | null;
 

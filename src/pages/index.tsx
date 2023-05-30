@@ -9,7 +9,7 @@ export default function IndexPage() {
             <Head>
                 <title>nextjs-base</title>
             </Head>
-            <h1>nextjs-base</h1>
+            <h1 className='text-center text-white text-4xl'>nextjs-base</h1>
         </Layout>
     )
 }

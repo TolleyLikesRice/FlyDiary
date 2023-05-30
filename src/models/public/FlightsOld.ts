@@ -25,9 +25,9 @@ export default interface FlightsOld {
 
   capacity: string;
 
-  depart: Date;
+  depart: string;
 
-  arrival: Date;
+  arrival: string;
 
   day_to: number | null;
 
@@ -63,9 +63,9 @@ export interface FlightsOldInitializer {
 
   capacity: string;
 
-  depart: Date;
+  depart: string;
 
-  arrival: Date;
+  arrival: string;
 
   /** Default value: 0 */
   day_to?: number | null;
@@ -104,9 +104,9 @@ export interface FlightsOldMutator {
 
   capacity?: string;
 
-  depart?: Date;
+  depart?: string;
 
-  arrival?: Date;
+  arrival?: string;
 
   day_to?: number | null;
 

@@ -15,5 +15,6 @@ module.exports = {
 
   customTypeMap: {
     'pg_catalog._text': 'string[]',
+    'pg_catalog.time': 'string'
   }
 };
