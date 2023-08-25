@@ -1,12 +1,60 @@
 'use client'
 
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable } from '@tanstack/react-table';
+import { ArrowUpDown, Map, MoreHorizontal, Pencil, ScrollText, Trash2 } from 'lucide-react';
 import { useState } from 'react'
 
+import { Button } from '@/components/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Flight } from '@/lib/dbSchemas';
+import { calculateBlockTime } from '@/lib/utils';
+
+import NewFlightModal from './NewFlightModal';
+
+function SortableHeader({ column, header }: { column: any, header: String }) {
+    return (
+        <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+            {header}
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+    )
+}
+
+function ActionMenu({ row }: { row: any }) {
+    const flight = row.original
+
+    const iconClass = 'h-4 w-4 mr-1.5'
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                    <span className="sr-only">Open menu</span>
+                    <MoreHorizontal className="h-4 w-4" />
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                <DropdownMenuItem><ScrollText className={iconClass} /> More Details</DropdownMenuItem>
+                <DropdownMenuItem><Map className={iconClass} /> Show on Map</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem><Pencil className={iconClass} /> Edit Flight</DropdownMenuItem>
+                <DropdownMenuItem className='text-red-500'><Trash2 className={iconClass} /> Delete Flight</DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu >
+    )
+}
+
 
 const columns: ColumnDef<Flight>[] = [
+    {
+        accessorKey: 'date',
+        header: (column) => <SortableHeader column={column} header="Date" />,
+
+    },
     {
         accessorKey: 'origin',
         header: 'Origin',
@@ -15,6 +63,28 @@ const columns: ColumnDef<Flight>[] = [
         accessorKey: 'destination',
         header: 'Destination',
     },
+    {
+        id: 'blockTime',
+        accessorFn: (row) => calculateBlockTime(row.timings.brakesOff, row.timings.brakesOn),
+        header: (column) => <SortableHeader column={column} header="Block Time" />
+    },
+    {
+        accessorKey: 'pic',
+        header: 'Captain',
+    },
+    {
+        accessorKey: 'aircraft.registration',
+        header: 'Aircraft',
+    },
+    {
+        accessorKey: 'aircraft.type',
+        header: 'Aircraft Type',
+    },
+    {
+        id: 'actions',
+        cell: (cell) => <ActionMenu row={cell.row} />,
+        header: () => <NewFlightModal />,
+    }
 ]
 
 interface DataTableProps<TData, TValue> {
@@ -24,11 +94,18 @@ interface DataTableProps<TData, TValue> {
 
 export default function FlightTable({ db }: { db: any }) {
     const [flights, setFlights] = useState(null)
+    const [sorting, setSorting] = useState<SortingState>([])
 
     const table = useReactTable({
         data: flights || [],
         columns,
         getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        onSortingChange: setSorting,
+        getSortedRowModel: getSortedRowModel(),
+        state: {
+            sorting,
+        }
     })
 
 
@@ -39,53 +116,71 @@ export default function FlightTable({ db }: { db: any }) {
         return <div>Loading flights</div> // TODO: Make loading state
     }
 
-    // Start of react table stuff
-
 
     return (
-        <div className="rounded-md border">
-            <Table>
-                <TableHeader>
-                    {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
-                            {headerGroup.headers.map((header) => {
-                                return (
-                                    <TableHead key={header.id}>
-                                        {header.isPlaceholder
-                                            ? null
-                                            : flexRender(
-                                                header.column.columnDef.header,
-                                                header.getContext()
-                                            )}
-                                    </TableHead>
-                                )
-                            })}
-                        </TableRow>
-                    ))}
-                </TableHeader>
-                <TableBody>
-                    {table.getRowModel().rows?.length ? (
-                        table.getRowModel().rows.map((row) => (
-                            <TableRow
-                                key={row.id}
-                                data-state={row.getIsSelected() && "selected"}
-                            >
-                                {row.getVisibleCells().map((cell) => (
-                                    <TableCell key={cell.id}>
-                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                    </TableCell>
-                                ))}
+        <div>
+            <div className="rounded-md border">
+                <Table>
+                    <TableHeader>
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <TableRow key={headerGroup.id}>
+                                {headerGroup.headers.map((header) => {
+                                    return (
+                                        <TableHead key={header.id}>
+                                            {header.isPlaceholder
+                                                ? null
+                                                : flexRender(
+                                                    header.column.columnDef.header,
+                                                    header.getContext()
+                                                )}
+                                        </TableHead>
+                                    )
+                                })}
                             </TableRow>
-                        ))
-                    ) : (
-                        <TableRow>
-                            <TableCell colSpan={columns.length} className="h-24 text-center">
-                                No results.
-                            </TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
-            </Table>
+                        ))}
+                    </TableHeader>
+                    <TableBody>
+                        {table.getRowModel().rows?.length ? (
+                            table.getRowModel().rows.map((row) => (
+                                <TableRow
+                                    key={row.id}
+                                    data-state={row.getIsSelected() && "selected"}
+                                >
+                                    {row.getVisibleCells().map((cell) => (
+                                        <TableCell key={cell.id}>
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                    No results.
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
+            <div className="flex items-center justify-end space-x-2 py-4">
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                >
+                    Previous
+                </Button>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                >
+                    Next
+                </Button>
+            </div>
         </div>
     )
 }

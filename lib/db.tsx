@@ -2,12 +2,14 @@
 
 import { addRxPlugin, createRxDatabase, RxCollection } from 'rxdb';
 import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
+import { RxDBMigrationPlugin } from 'rxdb/plugins/migration';
 import { getFetchWithCouchDBAuthorization, replicateCouchDB } from 'rxdb/plugins/replication-couchdb';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 
 import { flightSchema } from './dbSchemas';
 
 addRxPlugin(RxDBDevModePlugin);
+addRxPlugin(RxDBMigrationPlugin);
 
 let dbUrl: String;
 
@@ -64,7 +66,7 @@ export async function init(newUserID: Number, newDBUrl: String) {
     console.log(flightsReplicationState.push);
     await flightsReplicationState.start();
     await flightsReplicationState.reSync();
-    console.log("sunk??")
+    console.log("Replication started")
 
     // emits each document that was received from the remote
     flightsReplicationState.received$.subscribe(doc => console.dir(doc));

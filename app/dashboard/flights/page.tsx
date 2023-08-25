@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { addFlight, Database } from '@/lib/db'
@@ -12,18 +12,13 @@ export default function FlightsPage() {
 
     function databaseCallback(database: any) {
         setDb(database);
+        console.log("Database loaded");
     }
 
-    if (!db) return (<Database userID={14} dbUrl={'http://10.0.2.2:5984'} databaseCallback={databaseCallback} />) // TODO: Make UserID dynamic, and dbUrl configurable, and Database component show loading state
+    if (!db) return (<Database userID={16} dbUrl={'http://10.0.2.2:5984'} databaseCallback={databaseCallback} />) // TODO: Make UserID dynamic, and dbUrl configurable, and Database component show loading state
 
     return (
-        <div>
-            <h1>Flights</h1>
-            <Button onClick={() => addFlight({
-                id: new Date().getTime().toString(),
-                origin: 'EGKB',
-                destination: 'EGKB'
-            })}>Click me</Button>
+        <div className='container mx-auto md:p-8 lg:p-16'>
             <FlightTable db={db} />
         </div>
     )
