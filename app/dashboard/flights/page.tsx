@@ -1,25 +1,16 @@
-'use client'
+import FlightTable from '@/app/dashboard/flights/FlightTable'
+import RootLayout from '@/app/layout'
+import DatabaseProvider from '@/components/databaseProvider'
 
-import { useState } from 'react'
+import FlightTableSkeleton from './FlightTableSkeleton'
 
-import { Button } from '@/components/ui/button'
-import { addFlight, Database } from '@/lib/db'
-
-import FlightTable from './FlightTable'
-
-export default function FlightsPage() {
-    const [db, setDb] = useState(null);
-
-    function databaseCallback(database: any) {
-        setDb(database);
-        console.log("Database loaded");
-    }
-
-    if (!db) return (<Database userID={16} dbUrl={'http://10.0.2.2:5984'} databaseCallback={databaseCallback} />) // TODO: Make UserID dynamic, and dbUrl configurable, and Database component show loading state
-
+export default function DashboardPage() {
     return (
-        <div className='container mx-auto md:p-8 lg:p-16'>
-            <FlightTable db={db} />
-        </div>
+        <RootLayout>
+            <h1>this is a navbar wow</h1>
+            <div className='container mx-auto md:p-8 lg:p-16'>
+                <DatabaseProvider loadingSkeleton={<FlightTableSkeleton />} Element={FlightTable} />
+            </div>
+        </RootLayout>
     )
 }

@@ -80,17 +80,13 @@ export async function init(newUserID: Number, newDBUrl: String) {
     return collections;
 }
 
-export function Database({ userID, dbUrl, databaseCallback }: { userID: Number, dbUrl: String | undefined, databaseCallback: Function }) {
+export function Database({ userID, dbUrl, databaseCallback, loadingSkeleton }: { userID: Number, dbUrl: String | undefined, databaseCallback: Function, loadingSkeleton: React.ReactNode }) {
     if (!userID) throw new Error('No userID provided');
     if (!dbUrl) throw new Error('No dbUrl provided');
     if (!databaseCallback) throw new Error('No callback provided');
     init(userID, dbUrl).then((db) => databaseCallback(db))
 
-    return (
-        <div>
-            <p>Loading Database</p>
-        </div>
-    )
+    return loadingSkeleton;
 }
 
 // ----------------

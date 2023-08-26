@@ -1,16 +1,18 @@
 'use client'
 
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable } from '@tanstack/react-table';
-import { ArrowUpDown, Map, MoreHorizontal, Pencil, ScrollText, Trash2 } from 'lucide-react';
+import { ArrowUpDown, Map, MoreHorizontal, Pencil, Plus, ScrollText, Trash2 } from 'lucide-react';
 import { useState } from 'react'
 
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Database } from '@/lib/db';
 import { Flight } from '@/lib/dbSchemas';
 import { calculateBlockTime } from '@/lib/utils';
 
-import NewFlightModal from './NewFlightModal';
+import FlightModal from './FlightModal';
+import FlightTableSkeleton from './FlightTableSkeleton';
 
 function SortableHeader({ column, header }: { column: any, header: String }) {
     return (
@@ -48,53 +50,52 @@ function ActionMenu({ row }: { row: any }) {
     )
 }
 
-
-const columns: ColumnDef<Flight>[] = [
-    {
-        accessorKey: 'date',
-        header: (column) => <SortableHeader column={column} header="Date" />,
-
-    },
-    {
-        accessorKey: 'origin',
-        header: 'Origin',
-    },
-    {
-        accessorKey: 'destination',
-        header: 'Destination',
-    },
-    {
-        id: 'blockTime',
-        accessorFn: (row) => calculateBlockTime(row.timings.brakesOff, row.timings.brakesOn),
-        header: (column) => <SortableHeader column={column} header="Block Time" />
-    },
-    {
-        accessorKey: 'pic',
-        header: 'Captain',
-    },
-    {
-        accessorKey: 'aircraft.registration',
-        header: 'Aircraft',
-    },
-    {
-        accessorKey: 'aircraft.type',
-        header: 'Aircraft Type',
-    },
-    {
-        id: 'actions',
-        cell: (cell) => <ActionMenu row={cell.row} />,
-        header: () => <NewFlightModal />,
-    }
-]
-
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
 }
 
-export default function FlightTable({ db }: { db: any }) {
+export default function FlightTable({ db }: { db?: any }) {
     const [flights, setFlights] = useState(null)
     const [sorting, setSorting] = useState<SortingState>([])
+
+    const columns: ColumnDef<Flight>[] = [
+        {
+            accessorKey: 'date',
+            header: (column) => <SortableHeader column={column} header="Date" />,
+
+        },
+        {
+            accessorKey: 'origin',
+            header: 'Origin',
+        },
+        {
+            accessorKey: 'destination',
+            header: 'Destination',
+        },
+        {
+            id: 'blockTime',
+            accessorFn: (row) => calculateBlockTime(row.timings.brakesOff, row.timings.brakesOn),
+            header: (column) => <SortableHeader column={column} header="Block Time" />
+        },
+        {
+            accessorKey: 'pic',
+            header: 'PIC',
+        },
+        {
+            accessorKey: 'aircraft.registration',
+            header: 'Aircraft',
+        },
+        {
+            accessorKey: 'aircraft.type',
+            header: 'Aircraft Type',
+        },
+        {
+            id: 'actions',
+            cell: (cell) => <ActionMenu row={cell.row} />,
+            header: () => <FlightModal db={db} flight={null}><Button variant="ghost"><Plus /></Button></FlightModal>,
+        }
+    ]
 
     const table = useReactTable({
         data: flights || [],
@@ -108,12 +109,13 @@ export default function FlightTable({ db }: { db: any }) {
         }
     })
 
+    if (!db) return (<div>Error</div>) // Shouldn't be possible as databaseProvider shouldn't render this component until db is loaded, but here just incase
 
     if (!flights) {
         db.flights.find().$.subscribe((flights: any) => {
             setFlights(flights);
         })
-        return <div>Loading flights</div> // TODO: Make loading state
+        return <FlightTableSkeleton />
     }
 
 
