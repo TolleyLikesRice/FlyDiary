@@ -15,13 +15,12 @@ import FlightTableSkeleton from './FlightTableSkeleton';
 
 function SortableHeader({ column, header }: { column: any, header: String }) {
     return (
-        <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
+        <div className='flex items-center flex-row'>
             {header}
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+            <Button className='p-1.5' variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                <ArrowUpDown className="h-4 w-4" />
+            </Button>
+        </div>
     )
 }
 
@@ -102,7 +101,7 @@ export default function FlightTable({ db }: { db?: any }) {
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         onSortingChange: setSorting,
-        getSortedRowModel: getSortedRowModel(),
+        getSortedRowModel: getSortedRowModel(), // TODO: Fix sorting
         state: {
             sorting,
         }

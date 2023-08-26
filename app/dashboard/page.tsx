@@ -1,9 +1,13 @@
 import RootLayout from '@/app/layout'
+import NavBar from '@/components/complex-ui/navbar'
 
 export default function DashboardPage() {
     return (
         <RootLayout>
-            <p className='text-white text-4xl'>text2</p>
+            <NavBar />
+            <div className='container mx-auto md:p-8 lg:p-16'>
+                <p className='text-white text-4xl'>Dashy-mc-dashface goes here</p>
+            </div>
         </RootLayout>
     )
 }

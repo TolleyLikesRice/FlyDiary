@@ -12,7 +12,7 @@ export default function DatabaseProvider({ loadingSkeleton, Element }: { loading
         console.log("Database loaded");
     }
 
-    if (!db) return (<Database userID={17} dbUrl={'http://10.0.2.2:5984'} databaseCallback={databaseCallback} loadingSkeleton={loadingSkeleton} />) // TODO: Make UserID dynamic and dbUrl configurable
+    if (!db) return (<Database userID={18} dbUrl={'http://10.0.2.2:5984'} databaseCallback={databaseCallback} loadingSkeleton={loadingSkeleton} />) // TODO: Make UserID dynamic and dbUrl configurable
     if (!Element) throw new Error('No element provided');
 
     return <Element db={db} />;

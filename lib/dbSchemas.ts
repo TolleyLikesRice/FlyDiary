@@ -13,8 +13,14 @@ export type Flight = {
         type: string
         registration: string
     }
-    remarks: string
-    tags: string[][]
+    toLdg: {
+        dayTo?: number | null
+        nightTo?: number | null
+        dayLdg?: number | null
+        nightLdg?: number | null
+    }
+    remarks?: string | null
+    tags?: string[][] | null
 }
 
 export const flightSchema = {
@@ -33,19 +39,16 @@ export const flightSchema = {
             type: 'string'
         },
         date: {
-            type: 'string',
-            format: 'date'
+            type: 'string'
         },
         timings: {
             type: 'object',
             properties: {
                 brakesOff: {
-                    type: 'string',
-                    format: 'time'
+                    type: 'string'
                 },
                 brakesOn: {
-                    type: 'string',
-                    format: 'time'
+                    type: 'string'
                 }
             }
         },

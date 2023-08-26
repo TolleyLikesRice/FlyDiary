@@ -18,26 +18,30 @@ import {
 } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
-const aircraft = [ //TODO: get from user database
+const aircraft = [ //TODO: get from database
     {
-        value: "gabcd",
+        value: "new",
+        label: "Add new",
+    },
+    {
+        value: "g-abcd,c152",
         label: "G-ABCD (C152)",
     },
     {
-        value: "gefgh",
+        value: "g-efgh,c172",
         label: "G-EFGH (C172)",
     },
     {
-        value: "gijkl",
+        value: "g-ijkl,pa28",
         label: "G-IJKL (PA28)",
     },
     {
-        value: "gmnop",
+        value: "g-mnop,k100",
         label: "G-MNOP (K100)",
     },
 ]
 
-export function AircraftCombobox() {
+export function AircraftCombobox({ onChange }: { onChange: any }) {
     const [open, setOpen] = React.useState(false)
     const [value, setValue] = React.useState("")
 
@@ -52,20 +56,21 @@ export function AircraftCombobox() {
                 >
                     {value
                         ? aircraft.find((aircraft) => aircraft.value === value)?.label
-                        : "Select aircraft..."}
+                        : "Add new"}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[200px] p-0">
                 <Command>
                     <CommandInput placeholder="Search aircraft..." />
-                    <CommandEmpty>No aircraft found.</CommandEmpty> {/* Add an "add aircraft" button there. */}
+                    <CommandEmpty>No aircraft found.</CommandEmpty> {/* TODO: Add an "add aircraft" button there. */}
                     <CommandGroup>
                         {aircraft.map((aircraft) => (
                             <CommandItem
                                 key={aircraft.value}
                                 onSelect={(currentLabel) => {
                                     setValue(aircraft.value)
+                                    onChange(aircraft.value)
                                     setOpen(false)
                                 }}
                             >
