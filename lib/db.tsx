@@ -88,11 +88,3 @@ export function Database({ userID, dbUrl, databaseCallback, loadingSkeleton }: {
 
     return loadingSkeleton;
 }
-
-// ----------------
-// Flight Functions
-// ----------------
-
-export function addFlight(data: Object) {
-    collections.flights.insert(data);
-}

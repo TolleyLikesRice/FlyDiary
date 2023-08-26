@@ -66,6 +66,23 @@ export const flightSchema = {
                 }
             },
         },
+        toLdg: {
+            type: 'object',
+            properties: {
+                dayTo: {
+                    type: 'number'
+                },
+                nightTo: {
+                    type: 'number'
+                },
+                dayLdg: {
+                    type: 'number'
+                },
+                nightLdg: {
+                    type: 'number'
+                }
+            }
+        },
         remarks: {
             type: 'string'
         },
@@ -77,12 +94,18 @@ export const flightSchema = {
                     type: 'string'
                 }
             }
-        }
+        },
     },
     required: [
         'id',
         'origin',
-        'destination'
+        'destination',
+        'date',
+        'timings',
+        'pic',
+        'holderOperatingCapacity',
+        'aircraft',
+        'toLdg',
     ]
 }
-// TODO: Fix required, add landings and takeoffs, and that stuff, as well as sim time, instrument, that stuff.
+// TODO: Add sim time, instrument, that stuff.

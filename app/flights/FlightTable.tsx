@@ -7,7 +7,6 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Database } from '@/lib/db';
 import { Flight } from '@/lib/dbSchemas';
 import { calculateBlockTime } from '@/lib/utils';
 
@@ -26,7 +25,7 @@ function SortableHeader({ column, header }: { column: any, header: String }) {
     )
 }
 
-function ActionMenu({ row }: { row: any }) {
+function ActionMenu({ row, db }: { row: any, db: any }) {
     const flight = row.original
 
     const iconClass = 'h-4 w-4 mr-1.5'
@@ -43,7 +42,7 @@ function ActionMenu({ row }: { row: any }) {
                 <DropdownMenuItem><ScrollText className={iconClass} /> More Details</DropdownMenuItem>
                 <DropdownMenuItem><Map className={iconClass} /> Show on Map</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem><Pencil className={iconClass} /> Edit Flight</DropdownMenuItem>
+                <FlightModal db={db} flight={flight}><DropdownMenuItem><Pencil className={iconClass} /> Edit Flight</DropdownMenuItem></FlightModal>
                 <DropdownMenuItem className='text-red-500'><Trash2 className={iconClass} /> Delete Flight</DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu >
@@ -92,7 +91,7 @@ export default function FlightTable({ db }: { db?: any }) {
         },
         {
             id: 'actions',
-            cell: (cell) => <ActionMenu row={cell.row} />,
+            cell: (cell) => <ActionMenu row={cell.row} db={db} />,
             header: () => <FlightModal db={db} flight={null}><Button variant="ghost"><Plus /></Button></FlightModal>,
         }
     ]
