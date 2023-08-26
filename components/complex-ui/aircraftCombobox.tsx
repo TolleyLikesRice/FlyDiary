@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
-const frameworks = [
+const aircraft = [ //TODO: get from user database
     {
         value: "gabcd",
         label: "G-ABCD (C152)",
@@ -37,29 +37,6 @@ const frameworks = [
     },
 ]
 
-const frameworksorig = [
-    {
-        value: "next.js",
-        label: "Next.js",
-    },
-    {
-        value: "sveltekit",
-        label: "SvelteKit",
-    },
-    {
-        value: "nuxt.js",
-        label: "Nuxt.js",
-    },
-    {
-        value: "remix",
-        label: "Remix",
-    },
-    {
-        value: "astro2",
-        label: "Astro2",
-    },
-]
-
 export function AircraftCombobox() {
     const [open, setOpen] = React.useState(false)
     const [value, setValue] = React.useState("")
@@ -74,31 +51,31 @@ export function AircraftCombobox() {
                     className="w-[200px] justify-between"
                 >
                     {value
-                        ? frameworks.find((framework) => framework.value === value)?.label
-                        : "Select framework..."}
+                        ? aircraft.find((aircraft) => aircraft.value === value)?.label
+                        : "Select aircraft..."}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[200px] p-0">
                 <Command>
-                    <CommandInput placeholder="Search framework..." />
-                    <CommandEmpty>No framework found.</CommandEmpty>
+                    <CommandInput placeholder="Search aircraft..." />
+                    <CommandEmpty>No aircraft found.</CommandEmpty> {/* Add an "add aircraft" button there. */}
                     <CommandGroup>
-                        {frameworks.map((framework) => (
+                        {aircraft.map((aircraft) => (
                             <CommandItem
-                                key={framework.value}
+                                key={aircraft.value}
                                 onSelect={(currentLabel) => {
-                                    setValue(framework.value)
+                                    setValue(aircraft.value)
                                     setOpen(false)
                                 }}
                             >
                                 <Check
                                     className={cn(
                                         "mr-2 h-4 w-4",
-                                        value === framework.value ? "opacity-100" : "opacity-0"
+                                        value === aircraft.value ? "opacity-100" : "opacity-0"
                                     )}
                                 />
-                                {framework.label}
+                                {aircraft.label}
                             </CommandItem>
                         ))}
                     </CommandGroup>
