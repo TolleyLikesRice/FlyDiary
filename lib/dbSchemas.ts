@@ -120,8 +120,8 @@ export const flightSchema = {
 }
 
 export const flightZodSchema = z.object({ // Full disclosure: Used some regex's from https://gist.github.com/eightyknots/4372d1166a192d5e9754
-    origin: z.string().regex(/^[A-Z]{4}$/, "Must be a valid ICAO code").toUpperCase(),
-    destination: z.string().regex(/^[A-Z]{4}$/, "Must be a valid ICAO code").toUpperCase(),
+    origin: z.string().toUpperCase().regex(/^[A-Z]{4}$/, "Must be a valid ICAO code"),
+    destination: z.string().toUpperCase().regex(/^[A-Z]{4}$/, "Must be a valid ICAO code"),
     date: z.date().max(new Date(), 'Date cannot be in the future'),
     timings: z.object({
         brakesOff: z.string().regex(/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/, "Must be in HH:MM format"),
@@ -130,8 +130,8 @@ export const flightZodSchema = z.object({ // Full disclosure: Used some regex's 
     pic: z.string(),
     holderOperatingCapacity: z.string(),
     aircraft: z.object({
-        registration: z.string().regex(/^[A-Z]-[A-Z]{4}|[A-Z]{2}-[A-Z]{3}|N[0-9]{1,5}[A-Z]{0,2}$/, "Should be 5 characters, include dash if applicable").toUpperCase(),
-        type: z.string().regex(/^[A-Z]{1}[A-Z0-9]{1,3}$/, "Must be a valid ICAO code").toUpperCase(),
+        registration: z.string().toUpperCase().regex(/^[A-Z]-[A-Z]{4}|[A-Z]{2}-[A-Z]{3}|N[0-9]{1,5}[A-Z]{0,2}$/, "Should be 5 characters, include dash if applicable"),
+        type: z.string().toUpperCase().regex(/^[A-Z]{1}[A-Z0-9]{1,3}$/, "Must be a valid ICAO code"),
     }).required(),
     toLdg: z.object({
         dayTo: z.coerce.number(),
@@ -193,8 +193,8 @@ export const aircraftSchema = {
 }
 
 export const aircraftZodSchema = z.object({
-    type: z.string().regex(/^[A-Z]{1}[A-Z0-9]{1,3}$/, "Must be a valid ICAO code").toUpperCase(),
-    registration: z.string().regex(/^[A-Z]-[A-Z]{4}|[A-Z]{2}-[A-Z]{3}|N[0-9]{1,5}[A-Z]{0,2}$/, "Should be 5 characters, include dash if applicable").toUpperCase(),
+    type: z.string().toUpperCase().regex(/^[A-Z]{1}[A-Z0-9]{1,3}$/, "Must be a valid ICAO code"),
+    registration: z.string().toUpperCase().regex(/^[A-Z]-[A-Z]{4}|[A-Z]{2}-[A-Z]{3}|N[0-9]{1,5}[A-Z]{0,2}$/, "Should be 5 characters, include dash if applicable"),
     remarks: z.string().optional(),
     tags: z.array(z.string()).optional(),
 }).required().partial({
