@@ -18,6 +18,10 @@ const links = [
         label: 'Flights'
     },
     {
+        href: '/aircraft',
+        label: 'Aircraft'
+    },
+    {
         href: '/statistics',
         label: 'Statistics'
     }
