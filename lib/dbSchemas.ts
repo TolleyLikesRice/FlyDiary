@@ -154,7 +154,6 @@ export type Aircraft = {
     id: string
     type: string
     registration: string
-    imageUrl?: string | null
     remarks?: string | null
     tags?: string[] | null
 }
@@ -172,9 +171,6 @@ export const aircraftSchema = {
             type: 'string'
         },
         registration: {
-            type: 'string'
-        },
-        imageUrl: {
             type: 'string'
         },
         remarks: {
@@ -199,11 +195,9 @@ export const aircraftSchema = {
 export const aircraftZodSchema = z.object({
     type: z.string().regex(/^[A-Z]{1}[A-Z0-9]{1,3}$/, "Must be a valid ICAO code").toUpperCase(),
     registration: z.string().regex(/^[A-Z]-[A-Z]{4}|[A-Z]{2}-[A-Z]{3}|N[0-9]{1,5}[A-Z]{0,2}$/, "Should be 5 characters, include dash if applicable").toUpperCase(),
-    imageUrl: z.string().url().optional(),
     remarks: z.string().optional(),
     tags: z.array(z.string()).optional(),
 }).required().partial({
-    imageUrl: true,
     remarks: true,
     tags: true,
 });

@@ -97,8 +97,7 @@ export default function AircraftModal({ db, aircraft, children }: { db: any, air
                 registration: values.registration,
                 type: values.type,
                 remarks: values.remarks,
-                tags: [],
-                imageUrl: null
+                tags: []
             }
             console.log(values, aircraft)
             db.aircraft.insert(aircraft)
