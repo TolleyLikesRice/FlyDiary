@@ -25,35 +25,8 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Flight } from "@/lib/dbSchemas"
+import { Flight, flightZodSchema } from "@/lib/dbSchemas"
 import { generateSnowflake } from "@/lib/snowflake"
-
-const formSchema = z.object({ // Full disclosure: Used some regex's from https://gist.github.com/eightyknots/4372d1166a192d5e9754
-    origin: z.string().regex(/^[A-Z]{4}$/, "Must be a valid ICAO code").toUpperCase(),
-    destination: z.string().regex(/^[A-Z]{4}$/, "Must be a valid ICAO code").toUpperCase(),
-    date: z.date().max(new Date(), 'Date cannot be in the future'),
-    timings: z.object({
-        brakesOff: z.string().regex(/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/, "Must be in HH:MM format"),
-        brakesOn: z.string().regex(/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/, "Must be in HH:MM format"),
-    }).required(),
-    pic: z.string(),
-    holderOperatingCapacity: z.string(),
-    aircraft: z.object({
-        registration: z.string().regex(/^[A-Z]-[A-Z]{4}|[A-Z]{2}-[A-Z]{3}|N[0-9]{1,5}[A-Z]{0,2}$/, "Should be 5 characters, include dash if applicable").toUpperCase(),
-        type: z.string().regex(/^[A-Z]{1}[A-Z0-9]{1,3}$/, "Must be a valid ICAO code").toUpperCase(),
-    }).required(),
-    toLdg: z.object({
-        dayTo: z.coerce.number(),
-        nightTo: z.coerce.number(),
-        dayLdg: z.coerce.number(),
-        nightLdg: z.coerce.number(),
-    }).partial(),
-    remarks: z.string(),
-    tags: z.array(z.string()),
-}).required().partial({
-    remarks: true,
-    tags: true,
-});
 
 export default function FlightModal({ db, flight, children }: { db: any, flight: any | null, children: React.ReactNode }) {
     let header;
@@ -61,7 +34,7 @@ export default function FlightModal({ db, flight, children }: { db: any, flight:
     else header = "Edit Flight"
 
     const form = useForm({
-        resolver: zodResolver(formSchema),
+        resolver: zodResolver(flightZodSchema),
         defaultValues: flight
     })
 
@@ -258,7 +231,7 @@ export default function FlightModal({ db, flight, children }: { db: any, flight:
         }
     }
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
+    function onSubmit(values: z.infer<typeof flightZodSchema>) {
         if (header = "Add Flight") {
             let flight: Flight = {
                 id: generateSnowflake().toString(),

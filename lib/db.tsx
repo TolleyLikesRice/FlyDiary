@@ -6,7 +6,7 @@ import { RxDBMigrationPlugin } from 'rxdb/plugins/migration';
 import { getFetchWithCouchDBAuthorization, replicateCouchDB } from 'rxdb/plugins/replication-couchdb';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 
-import { flightSchema } from './dbSchemas';
+import { aircraftSchema, flightSchema } from './dbSchemas';
 
 addRxPlugin(RxDBDevModePlugin);
 addRxPlugin(RxDBMigrationPlugin);
@@ -17,6 +17,7 @@ let userID;
 let database;
 let collections: {
     flights: RxCollection
+    aircraft: RxCollection
 };
 
 export async function init(newUserID: Number, newDBUrl: String) {
@@ -34,6 +35,9 @@ export async function init(newUserID: Number, newDBUrl: String) {
     collections = await database.addCollections({
         flights: {
             schema: flightSchema
+        },
+        aircraft: {
+            schema: aircraftSchema
         }
     });
 
@@ -44,7 +48,16 @@ export async function init(newUserID: Number, newDBUrl: String) {
             {
                 method: 'PUT',
                 headers: {
-                    Authorization: "Basic dG9sbGV5OmFkbWlu"
+                    Authorization: "Basic dG9sbGV5OmFkbWlu" // TODO: Make this dynamic
+                }
+            }
+        );
+        await fetch(
+            `${dbUrl}/user_${userID}-aircraft/`,
+            {
+                method: 'PUT',
+                headers: {
+                    Authorization: "Basic dG9sbGV5OmFkbWlu" // TODO: Make this dynamic
                 }
             }
         );
@@ -63,10 +76,23 @@ export async function init(newUserID: Number, newDBUrl: String) {
         },
         pull: {}
     })
-    console.log(flightsReplicationState.push);
     await flightsReplicationState.start();
     await flightsReplicationState.reSync();
-    console.log("Replication started")
+    console.log("Flights Replication started")
+
+    const aircraftReplicationState = await replicateCouchDB({
+        collection: collections.aircraft,
+        url: `${dbUrl}/user_${userID}-aircraft/`,
+        fetch: getFetchWithCouchDBAuthorization('tolley', 'admin'), //TODO: Make this dynamic
+        push: {
+            batchSize: 1,
+            modifier: (doc) => { return doc }
+        },
+        pull: {}
+    })
+    await aircraftReplicationState.start();
+    await aircraftReplicationState.reSync();
+    console.log("Aircraft Replication started")
 
     // emits each document that was received from the remote
     flightsReplicationState.received$.subscribe(doc => console.dir(doc));
