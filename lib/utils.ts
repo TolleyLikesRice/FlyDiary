@@ -16,13 +16,21 @@ export function calculateBlockTime(brakesOff: string, brakesOn: string) {
   const brakesOnHours = parseInt(brakesOnSplit[0])
   const brakesOnMinutes = parseInt(brakesOnSplit[1])
 
-  let blockTime = 0
+  let blockTimeInMinutes = 0
   if (brakesOffHours > brakesOnHours) {
     // If the brakes off time is greater than the brakes on time, we know the flight was overnight
     // So we need to add 24 hours to the brakes on time
-    blockTime = (brakesOnHours + 24 - brakesOffHours) * 60 + brakesOnMinutes - brakesOffMinutes
+    blockTimeInMinutes = (brakesOnHours + 24 - brakesOffHours) * 60 + brakesOnMinutes - brakesOffMinutes
   } else {
-    blockTime = (brakesOnHours - brakesOffHours) * 60 + brakesOnMinutes - brakesOffMinutes
+    blockTimeInMinutes = (brakesOnHours - brakesOffHours) * 60 + brakesOnMinutes - brakesOffMinutes
   }
-  return blockTime
+  // Convert to HH:MM
+  const blockHours = Math.floor(blockTimeInMinutes / 60)
+  const blockMinutes = blockTimeInMinutes % 60
+
+  // add leading zero for hours and minutes
+  const blockHoursString = blockHours < 10 ? `0${blockHours}` : `${blockHours}`
+  const blockMinutesString = blockMinutes < 10 ? `0${blockMinutes}` : `${blockMinutes}`
+  
+  return `${blockHoursString}:${blockMinutesString}`
 }
