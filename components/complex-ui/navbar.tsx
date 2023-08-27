@@ -37,9 +37,9 @@ export default function NavBar() {
                         {
                             links.map(link => (
                                 <NavigationMenuItem key={link.href}>
-                                    <NavigationMenuLink href={link.href} className={navigationMenuTriggerStyle()}>
+                                    <Link href={link.href} className={navigationMenuTriggerStyle()}>
                                         {link.label}
-                                    </NavigationMenuLink>
+                                    </Link>
                                 </NavigationMenuItem>
                             ))
                         }
