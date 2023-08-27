@@ -29,6 +29,8 @@ import { Flight, flightZodSchema } from "@/lib/dbSchemas"
 import { generateSnowflake } from "@/lib/snowflake"
 
 export default function FlightModal({ db, flight, children }: { db: any, flight: any | null, children: React.ReactNode }) {
+    const [open, setOpen] = useState<boolean>(false)
+
     let header;
     if (!flight) header = "Add Flight"
     else header = "Edit Flight"
@@ -42,7 +44,7 @@ export default function FlightModal({ db, flight, children }: { db: any, flight:
     let [aircraftRegistrationInputDisabled, setAircraftRegistrationInputDisabled] = useState(false)
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 {children}
             </DialogTrigger>
@@ -257,8 +259,10 @@ export default function FlightModal({ db, flight, children }: { db: any, flight:
                 remarks: values.remarks,
                 tags: null,
             }
-            console.log(values, flight)
-            db.flights.insert(flight)
+            db.flights.insert(flight).then(() => {
+                setOpen(false)
+            })
+
         } else if (header = "Edit Flight") {
             // TODO: Implement editing
             throw new Error("Not implemented")
