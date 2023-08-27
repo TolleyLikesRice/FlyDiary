@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 
+import GenericSkeleton from '@/components/complex-ui/GenericSkeleton';
 import { Button } from "@/components/ui/button";
 
 import AircraftCard from "./AircraftCard";
@@ -14,10 +15,9 @@ export default function AircraftGrid({ db }: { db: any }) {
 
     if (!aircraft) {
         db.aircraft.find().$.subscribe((aircraft: any) => {
-            console.log(aircraft);
             setAircraft(aircraft);
         })
-        return (<div>loading</div>) // TODO: Skeleton
+        return (<GenericSkeleton />) // TODO: Skeleton
     }
 
     return (

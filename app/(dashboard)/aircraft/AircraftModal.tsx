@@ -26,6 +26,8 @@ import { Aircraft, aircraftZodSchema } from "@/lib/dbSchemas"
 import { generateSnowflake } from "@/lib/snowflake"
 
 export default function AircraftModal({ db, aircraft, children }: { db: any, aircraft: any | null, children: React.ReactNode }) {
+    const [open, setOpen] = useState<boolean>(false)
+
     let header;
     if (!aircraft) header = "Add Aircraft"
     else header = "Edit Aircraft"
@@ -36,7 +38,7 @@ export default function AircraftModal({ db, aircraft, children }: { db: any, air
     })
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 {children}
             </DialogTrigger>
@@ -66,7 +68,7 @@ export default function AircraftModal({ db, aircraft, children }: { db: any, air
                                 </FormItem>
                             )} />
                         </div>
-                       {/* TODO: Image */}
+                        {/* TODO: Image */}
                         <div className="flex flex-row gap-8">
                             <FormField control={form.control} name="remarks" render={({ field }) => (
                                 <FormItem className="flex-grow">
@@ -99,8 +101,9 @@ export default function AircraftModal({ db, aircraft, children }: { db: any, air
                 remarks: values.remarks,
                 tags: []
             }
-            console.log(values, aircraft)
-            db.aircraft.insert(aircraft)
+            db.aircraft.insert(aircraft).then(() => {
+                setOpen(false)
+            })
         } else if (header = "Edit Aircraft") {
             // TODO: Implement editing
             throw new Error("Not implemented")

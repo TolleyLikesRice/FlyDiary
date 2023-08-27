@@ -8,7 +8,7 @@ import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 
 import { aircraftSchema, flightSchema } from './dbSchemas';
 
-addRxPlugin(RxDBDevModePlugin);
+//addRxPlugin(RxDBDevModePlugin);
 addRxPlugin(RxDBMigrationPlugin);
 
 let dbUrl: String;

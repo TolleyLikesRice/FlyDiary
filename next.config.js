@@ -13,6 +13,12 @@ const nextConfig = {
                 hostname: 't.plnspttrs.net',
                 port: '',
                 pathname: '/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'static.vecteezy.com',
+                port: '',
+                pathname: '/**',
             }
         ]
     }
