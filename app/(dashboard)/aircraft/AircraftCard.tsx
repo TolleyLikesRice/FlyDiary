@@ -26,7 +26,7 @@ export default function AircraftCard({ aircraft }: { aircraft: Aircraft }) {
         <Card className="w-[350px] h-full">
             <div className="w-full h-full rounded-xl overflow-clip">
                     <Image className="w-full h-[230px] object-cover" src={aircraftImage} width={400} height={500} alt={`Photo of ${aircraft.registration}`} />
-                    { photoData && <div className="w-full text-right text-[0.5rem] p-0.5 pr-2 text-neutral-300 bg-slate-80">Photo by {photoData.photographer}, sourced from <a className="underline hover:text-blue-400" href={photoData.link}>PlaneSpotters.net</a></div> }
+                    { photoData && <div className="w-full text-right text-[0.5rem] p-0.5 pr-2 text-neutral-300 bg-black">Photo by {photoData.photographer}, sourced from <a className="underline hover:text-blue-400" href={photoData.link}>PlaneSpotters.net</a></div> }
                 </div> {/* TODO: make attribution look nicer + add actions menu in top right */}
             <CardHeader>
                 <CardTitle>{aircraft.registration}</CardTitle>

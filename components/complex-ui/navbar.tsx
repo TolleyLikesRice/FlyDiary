@@ -46,6 +46,7 @@ export default function NavBar() {
                     </NavigationMenuList>
                 </NavigationMenu>
                 <div className='flex-grow' />
+                {/* TODO: Add sync state indicator */}
                 <AvatarDropdown />
             </div>
             <Separator className='w-screen' />
