@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { FlyDiaryConfig } from "@/flydiary.config";
 import { Database } from "@/lib/db";
 
 export default function DatabaseProvider({ loadingSkeleton, Element }: { loadingSkeleton: React.ReactNode, Element: any }) {
@@ -12,7 +13,7 @@ export default function DatabaseProvider({ loadingSkeleton, Element }: { loading
         console.log("Database loaded");
     }
 
-    if (!db) return (<Database userID={19} dbUrl={'http://10.0.2.2:5984'} databaseCallback={databaseCallback} loadingSkeleton={loadingSkeleton} />) // TODO: Make UserID dynamic and dbUrl configurable
+    if (!db) return (<Database userID={FlyDiaryConfig.UserID} databaseCallback={databaseCallback} loadingSkeleton={loadingSkeleton} />) // TODO: Make UserID dynamic and dbUrl configurable
     if (!Element) throw new Error('No element provided');
 
     return <Element db={db} />;

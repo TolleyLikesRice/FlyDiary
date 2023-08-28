@@ -6,12 +6,14 @@ import { RxDBMigrationPlugin } from 'rxdb/plugins/migration';
 import { getFetchWithCouchDBAuthorization, replicateCouchDB } from 'rxdb/plugins/replication-couchdb';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 
+import { FlyDiaryConfig } from '@/flydiary.config';
+
 import { aircraftSchema, flightSchema } from './dbSchemas';
 
 //addRxPlugin(RxDBDevModePlugin);
 addRxPlugin(RxDBMigrationPlugin);
 
-let dbUrl: String;
+const dbUrl = FlyDiaryConfig.CouchDBUrl;
 
 let userID;
 let database;
@@ -20,11 +22,9 @@ let collections: {
     aircraft: RxCollection
 };
 
-export async function init(newUserID: Number, newDBUrl: String) {
+export async function init(newUserID: Number) {
     if (!newUserID) throw new Error('No userID provided');
-    if (!newDBUrl) throw new Error('No dbUrl provided');
     userID = newUserID;
-    dbUrl = newDBUrl;
 
     database = await createRxDatabase({
         name: `user_${userID}`,
@@ -48,7 +48,7 @@ export async function init(newUserID: Number, newDBUrl: String) {
             {
                 method: 'PUT',
                 headers: {
-                    Authorization: "Basic dG9sbGV5OmFkbWlu" // TODO: Make this dynamic
+                    Authorization: `Basic ${Buffer.from(FlyDiaryConfig.CouchDBUsername + ":" + FlyDiaryConfig.CouchDBPassword).toString('base64')}` // TODO: Get according to auth
                 }
             }
         );
@@ -57,7 +57,7 @@ export async function init(newUserID: Number, newDBUrl: String) {
             {
                 method: 'PUT',
                 headers: {
-                    Authorization: "Basic dG9sbGV5OmFkbWlu" // TODO: Make this dynamic
+                    Authorization: `Basic ${Buffer.from(FlyDiaryConfig.CouchDBUsername + ":" + FlyDiaryConfig.CouchDBPassword).toString('base64')}` // TODO: Get according to auth
                 }
             }
         );
@@ -69,7 +69,7 @@ export async function init(newUserID: Number, newDBUrl: String) {
     const flightsReplicationState = await replicateCouchDB({
         collection: collections.flights,
         url: `${dbUrl}/user_${userID}-flights/`,
-        fetch: getFetchWithCouchDBAuthorization('tolley', 'admin'), //TODO: Make this dynamic
+        fetch: getFetchWithCouchDBAuthorization(FlyDiaryConfig.CouchDBUsername, FlyDiaryConfig.CouchDBPassword), // TODO: Get according to auth
         push: {
             batchSize: 1,
             modifier: (doc) => { return doc }
@@ -106,11 +106,11 @@ export async function init(newUserID: Number, newDBUrl: String) {
     return collections;
 }
 
-export function Database({ userID, dbUrl, databaseCallback, loadingSkeleton }: { userID: Number, dbUrl: String | undefined, databaseCallback: Function, loadingSkeleton: React.ReactNode }) {
+export function Database({ userID, databaseCallback, loadingSkeleton }: { userID: Number, databaseCallback: Function, loadingSkeleton: React.ReactNode }) {
     if (!userID) throw new Error('No userID provided');
     if (!dbUrl) throw new Error('No dbUrl provided');
     if (!databaseCallback) throw new Error('No callback provided');
-    init(userID, dbUrl).then((db) => databaseCallback(db))
+    init(userID).then((db) => databaseCallback(db))
 
     return loadingSkeleton;
 }
