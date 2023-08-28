@@ -27,7 +27,7 @@ export default function AircraftGrid({ db }: { db: any }) {
             </AircraftModal>
             <div className='flex flex-wrap gap-4 py-4 items-center justify-center'>
                 {aircraft.map((aircraft: any) => (
-                    <AircraftCard key={aircraft.id} aircraft={aircraft} />
+                    <AircraftCard key={aircraft.id} aircraft={aircraft} aircraftDocument={aircraft} db={db} />
                 ))}
             </div>
         </div>
