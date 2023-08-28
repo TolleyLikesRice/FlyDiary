@@ -68,7 +68,6 @@ export default function AircraftModal({ db, aircraft, children }: { db: any, air
                                 </FormItem>
                             )} />
                         </div>
-                        {/* TODO: Image */}
                         <div className="flex flex-row gap-8">
                             <FormField control={form.control} name="remarks" render={({ field }) => (
                                 <FormItem className="flex-grow">
