@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
-const aircraft = [ //TODO: get from database
+const aircraft = [
     {
         value: "new",
         label: "Add new",
@@ -41,9 +41,35 @@ const aircraft = [ //TODO: get from database
     },
 ]
 
-export function AircraftCombobox({ onChange }: { onChange: any }) {
+export function AircraftCombobox({ onChange, db }: { onChange: any, db: any }) {
     const [open, setOpen] = React.useState(false)
     const [value, setValue] = React.useState("")
+    const [aircraft, setAircraft] = React.useState<any>([{
+        value: "new",
+        label: "Loading...",
+    }])
+    const [loadedAircraft, setLoadedAircraft] = React.useState<boolean>(false)
+
+    if (!loadedAircraft) {
+        db.aircraft.find().$.subscribe((acArr: Object[]) => {
+            let AircraftArray = [
+                {
+                    value: "new",
+                    label: "Add new",
+                },
+            ]
+
+            acArr.forEach((ac: any) => {
+                AircraftArray.push({
+                    value: `${ac.registration},${ac.type}`,
+                    label: `${ac.registration} (${ac.type})`,
+                })
+            })
+
+            setAircraft(AircraftArray)
+            setLoadedAircraft(true)
+        })
+    }
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -55,7 +81,7 @@ export function AircraftCombobox({ onChange }: { onChange: any }) {
                     className="w-[200px] justify-between"
                 >
                     {value
-                        ? aircraft.find((aircraft) => aircraft.value === value)?.label
+                        ? aircraft.find((aircraft: any) => aircraft.value === value)?.label
                         : "Add new"}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
@@ -65,7 +91,7 @@ export function AircraftCombobox({ onChange }: { onChange: any }) {
                     <CommandInput placeholder="Search aircraft..." />
                     <CommandEmpty>No aircraft found.</CommandEmpty> {/* TODO: Add an "add aircraft" button there. */}
                     <CommandGroup>
-                        {aircraft.map((aircraft) => (
+                        {aircraft.map((aircraft: any) => (
                             <CommandItem
                                 key={aircraft.value}
                                 onSelect={(currentLabel) => {

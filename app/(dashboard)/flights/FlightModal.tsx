@@ -154,7 +154,7 @@ export function FlightModalContent({ db, flight, setOpen }: { db: any, flight: a
                     <div className="flex flex-row gap-8">
                         <FormItem className="space-y-2 flex-grow w-[200px]"> {/* TODO: Fix weird spacing issue */}
                             <FormLabel>Saved Aircraft</FormLabel>
-                            <AircraftCombobox onChange={aircraftComboBoxOnChange} />
+                            <AircraftCombobox onChange={aircraftComboBoxOnChange} db={db} />
                         </FormItem>
                         <FormField control={form.control} name="aircraft.type" render={({ field }) => (
                             <FormItem className="flex-grow">
@@ -236,18 +236,23 @@ export function FlightModalContent({ db, flight, setOpen }: { db: any, flight: a
     )
 
     function aircraftComboBoxOnChange(newValue: String) {
+        const regInput = document.getElementById("aircraftRegistrationInput") as HTMLInputElement;
+        const typeInput = document.getElementById("aircraftTypeInput") as HTMLInputElement;
+
         if (newValue === "new") {
             setAircraftRegistrationInputDisabled(false);
             setAircraftTypeInputDisabled(false);
-            (document.getElementById("aircraftRegistrationInput") as HTMLInputElement).value = "";
-            (document.getElementById("aircraftTypeInput") as HTMLInputElement).value = "";
+            regInput.value = "";
+            typeInput.value = "";
         } else {
             setAircraftRegistrationInputDisabled(true);
             setAircraftTypeInputDisabled(true);
             let aircraftRegistration = newValue.split(",")[0].toUpperCase();
             let aircraftType = newValue.split(",")[1].toUpperCase();
-            (document.getElementById("aircraftRegistrationInput") as HTMLInputElement).value = aircraftRegistration;
-            (document.getElementById("aircraftTypeInput") as HTMLInputElement).value = aircraftType;
+            regInput.value = aircraftRegistration;
+            typeInput.value = aircraftType;
+            set(form.getValues(), "aircraft.registration", aircraftRegistration);
+            set(form.getValues(), "aircraft.type", aircraftType);
         }
     }
 
