@@ -1,5 +1,7 @@
 # FlyDiary
 
+🚧 Work in progress 🚧
+
 An open-source logbook for private pilots.
 
 ## Features
