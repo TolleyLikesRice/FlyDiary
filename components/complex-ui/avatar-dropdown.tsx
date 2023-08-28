@@ -36,7 +36,7 @@ export default function AvatarDropdown() {
                     </DropdownMenuPortal>
                 </DropdownMenuSub>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-red-400"><LogOut className="mr-2 h-4 w-4" /> Log out</DropdownMenuItem>
+                <DropdownMenuItem className="text-red-500"><LogOut className="mr-2 h-4 w-4" /> Log out</DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     )
