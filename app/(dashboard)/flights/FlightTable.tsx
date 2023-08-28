@@ -4,6 +4,8 @@ import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, getSorte
 import { ArrowUpDown, Map, MoreHorizontal, Pencil, Plus, ScrollText, Trash2 } from 'lucide-react';
 import { useState } from 'react'
 
+import DeleteDialogContent from '@/components/complex-ui/deleteDialog';
+import { AlertDialog, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -31,26 +33,30 @@ function ActionMenu({ row, db }: { row: any, db: any }) {
     const iconClass = 'h-4 w-4 mr-1.5'
 
     const [editFlightOpen, setEditFlightOpen] = useState(false)
+    const [deleteFlightOpen, setDeleteFlightOpen] = useState(false)
 
     return (
-        <Dialog open={editFlightOpen} onOpenChange={setEditFlightOpen}>
-            <FlightModalContent db={db} flight={flight} setOpen={setEditFlightOpen} />
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                        <span className="sr-only">Open menu</span>
-                        <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    <DropdownMenuItem><ScrollText className={iconClass} /> More Details</DropdownMenuItem>
-                    <DropdownMenuItem><Map className={iconClass} /> Show on Map</DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DialogTrigger asChild><DropdownMenuItem><Pencil className={iconClass} /> Edit Flight</DropdownMenuItem></DialogTrigger>
-                    <DropdownMenuItem className='text-red-500'><Trash2 className={iconClass} /> Delete Flight</DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu >
-        </Dialog>
+        <AlertDialog open={deleteFlightOpen} onOpenChange={setDeleteFlightOpen}>
+            <DeleteDialogContent document={flight} type='flight' setOpen={setDeleteFlightOpen} />
+            <Dialog open={editFlightOpen} onOpenChange={setEditFlightOpen}>
+                <FlightModalContent db={db} flight={flight} setOpen={setEditFlightOpen} />
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                            <span className="sr-only">Open menu</span>
+                            <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuItem><ScrollText className={iconClass} /> More Details</DropdownMenuItem>
+                        <DropdownMenuItem><Map className={iconClass} /> Show on Map</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DialogTrigger asChild><DropdownMenuItem><Pencil className={iconClass} /> Edit Flight</DropdownMenuItem></DialogTrigger>
+                        <AlertDialogTrigger asChild><DropdownMenuItem className='text-red-500'><Trash2 className={iconClass} /> Delete Flight</DropdownMenuItem></AlertDialogTrigger>
+                    </DropdownMenuContent>
+                </DropdownMenu >
+            </Dialog>
+        </AlertDialog>
     )
 }
 
