@@ -65,6 +65,7 @@ export function FlightModalContent({ db, flight, setOpen }: { db: any, flight: a
 
     let [aircraftTypeInputDisabled, setAircraftTypeInputDisabled] = useState(false)
     let [aircraftRegistrationInputDisabled, setAircraftRegistrationInputDisabled] = useState(false)
+    let latestComboBoxValue = "new";
 
     return (
         <DialogContent className="sm:max-w-[468px] lg:max-w-[70%] w-fit overflow-y-scroll max-h-screen">
@@ -235,9 +236,10 @@ export function FlightModalContent({ db, flight, setOpen }: { db: any, flight: a
         </DialogContent>
     )
 
-    function aircraftComboBoxOnChange(newValue: String) {
+    function aircraftComboBoxOnChange(newValue: string) {
         const regInput = document.getElementById("aircraftRegistrationInput") as HTMLInputElement;
         const typeInput = document.getElementById("aircraftTypeInput") as HTMLInputElement;
+        latestComboBoxValue = newValue;
 
         if (newValue === "new") {
             setAircraftRegistrationInputDisabled(false);
@@ -257,7 +259,24 @@ export function FlightModalContent({ db, flight, setOpen }: { db: any, flight: a
     }
 
     function onSubmit(values: z.infer<typeof flightZodSchema>) {
-        // TODO: Handle Add New Aircraft logic
+        if (latestComboBoxValue === "new") {
+            let aircraftAlreadyExists = false;
+            db.aircraft.find().$.subscribe((aircraft: any) => {
+                aircraft.forEach((ac: any) => {
+                    if (ac.registration.toUpperCase() === values.aircraft.registration.toUpperCase()) {
+                        aircraftAlreadyExists = true;
+                    }
+                })
+
+                if (aircraftAlreadyExists) return;
+
+                db.aircraft.insert({
+                    id: generateSnowflake().toString(),
+                    registration: values.aircraft.registration.toUpperCase(),
+                    type: values.aircraft.type.toUpperCase(),
+                })
+            })
+        }
 
         let newFlight: Flight = {
             id: generateSnowflake().toString(),
