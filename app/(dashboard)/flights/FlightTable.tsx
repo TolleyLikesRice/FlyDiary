@@ -93,12 +93,21 @@ export default function FlightTable({ db }: { db?: any }) {
             header: 'PIC',
         },
         {
+            accessorKey: 'holderOperatingCapacity',
+            header: 'Capacity',
+        },
+        {
+            id: 'landings',
+            header: 'Landings',
+            accessorFn: (row) => (row.toLdg.dayLdg + row.toLdg.nightLdg),
+        },
+        {
             accessorKey: 'aircraft.registration',
             header: 'Aircraft',
         },
         {
             accessorKey: 'aircraft.type',
-            header: 'Aircraft Type',
+            header: 'Type',
         },
         {
             accessorKey: 'remarks',

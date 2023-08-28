@@ -21,10 +21,10 @@ export type Flight = {
         registration: string
     }
     toLdg: {
-        dayTo?: number | null
-        nightTo?: number | null
-        dayLdg?: number | null
-        nightLdg?: number | null
+        dayTo: number
+        nightTo: number
+        dayLdg: number
+        nightLdg: number
     }
     remarks?: string | null
     tags?: string[] | null
