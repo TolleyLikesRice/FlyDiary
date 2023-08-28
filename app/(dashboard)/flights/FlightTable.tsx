@@ -89,6 +89,10 @@ export default function FlightTable({ db }: { db?: any }) {
             header: 'Aircraft Type',
         },
         {
+            accessorKey: 'remarks',
+            header: 'Remarks',
+        },
+        {
             id: 'actions',
             cell: (cell) => <ActionMenu row={cell.row} db={db} />,
             header: () => <FlightModal db={db} flight={null}><Button variant="ghost"><Plus /></Button></FlightModal>,
